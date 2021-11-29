@@ -28,6 +28,17 @@ const plugins = [
   //     webhook_secret: STRIPE_WEBHOOK_SECRET,
   //   },
   // },
+  `medusa-file-s3`,
+  {
+    resolve: `medusa-file-s3`,
+    options: {
+      s3_url: 'https://medusa-example.s3.eu-central-1.amazonaws.com',
+      bucket: 'medusa-example',
+      region: 'eu-central-1',
+      access_key_id: 'AKIAWU5H6MOKPQWVZZZK',
+      secret_access_key: process.env.AWS_SECRET,
+    },
+  },
 ];
 
 module.exports = {
