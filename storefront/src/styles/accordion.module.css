@@ -1,0 +1,22 @@
+.accordionItem {
+  position: relative;
+  color: #0a3149;
+}
+
+.accordionItemHeading {
+  cursor: pointer;
+}
+
+.accordionItemIcon {
+  width: 11px;
+  height: 7px;
+  background-image: url( '../images/select-icon.svg' );
+  background-size: contain;
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+
+.accordionItemButton {
+  font-size: 14px;
+}

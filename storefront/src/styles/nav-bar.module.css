@@ -1,10 +1,13 @@
 .container {
+  width: 100%;
+  max-height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 88px;
-  position: absolute;
-  width: 100%;
+  padding-top: 12px;
+  padding-right: 10px;
+  padding-bottom: 12px;
+  padding-left: 10px;
 }
 
 .container h1 {
@@ -26,16 +29,24 @@
 }
 
 .btn span {
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
+  margin-left: .75rem;
+  margin-right: .75rem;
 }
 
 .btn svg {
   font-size: var(--fz-ml);
 }
 
-@media (max-width: 876px) {
+@media(min-width: 420px) {
   .container {
-    padding: 20px 22px;
+    position: relative;
+    justify-content: center;
+  }
+
+  .btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
