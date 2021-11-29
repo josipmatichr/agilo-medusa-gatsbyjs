@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BiShoppingBag } from "react-icons/bi";
 import StoreContext from "../../context/store-context";
 import * as styles from "../../styles/product.module.css";
+import * as accordionStyles from "../../styles/accordion.module.css";
 import { createClient } from "../../utils/client";
 import { formatPrices } from "../../utils/format-price";
 import { getSlug, resetOptions } from "../../utils/helper-functions";
+import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel } from "react-accessible-accordion";
 
 const Product = ({ location }) => {
   const { cart, addVariantToCart } = useContext(StoreContext);
@@ -21,6 +22,7 @@ const Product = ({ location }) => {
     const getProduct = async () => {
       const slug = getSlug(location.pathname);
       const response = await client.products.retrieve(slug);
+      console.log( response );
       setProduct(response.product);
     };
 
@@ -64,49 +66,88 @@ const Product = ({ location }) => {
     if (product) setOptions(resetOptions(product));
   };
 
+  const [colorID, setColorID] = useState(0);
+
+  const colors = [
+    {
+      id: 1,
+      title: 'black',
+      colorHex: '#000',
+    },
+    {
+      id: 2,
+      title: 'white',
+      colorHex: '#fff',
+    },
+  ]
+
   return product && cart.id ? (
     <div className={styles.container}>
       <figure className={styles.image}>
         <div className={styles.placeholder}>
           <img
-            style={{ height: "100%", width: "100%", objectFit: "cover" }}
+            style={{ height: "100%", width: "100%", objectFit: "contain" }}
             src={product.thumbnail}
             alt={`${product.title}`}
           />
         </div>
       </figure>
       <div className={styles.info}>
-        <span />
-        <div>
-          <div className="title">
-            <h1>{product.title}</h1>
-          </div>
-          <p className="price">{formatPrices(cart, product.variants[0])}</p>
+        <div className={styles.infoContainer}>
+          <h1 className={styles.title}>{product.title}</h1>
+          <p className={styles.price}>{formatPrices(cart, product.variants[0])}</p>
+          <p className={styles.subtitle}>{product.subtitle}</p>
           <div className={styles.selection}>
-            <p>Select Size</p>
+            <div className={styles.colorPickerGroup}>
+              {colors.map((color, index) => {
+                return (
+                  <div className={styles.colorPickerGroupItem}>
+                    <input
+                      type="radio"
+                      name="color"
+                      value={color.title}
+                      id={color.id}
+                      key={index}
+                      className={styles.colorPickerInput}
+                      onClick={() => setColorID(index)}
+                      checked={colorID === index} />
+                    <label for={color.id} style={{backgroundColor: color.colorHex}} className={styles.colorPickerLabel} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className={styles.selection}>
             <div className="selectors">
-              {product.variants
-                .slice(0)
-                .reverse()
-                .map((v) => {
-                  return (
-                    <button
-                      key={v.id}
-                      className={`${styles.sizebtn} ${
-                        v.title === options.size ? styles.selected : null
-                      }`}
-                      onClick={() =>
-                        setOptions({
-                          variantId: v.id,
-                          quantity: options.quantity,
-                          size: v.title,
-                        })
-                      }
-                    >
-                      {v.title}
-                    </button>
-                  );
+              <select
+                onChange={ e => {
+                  const selected = JSON.parse(e.currentTarget.value);
+
+                  setOptions({
+                    variantId: selected.variantId,
+                    quantity: options.quantity,
+                    size: selected.size,
+                  })
+                } }
+                className={styles.select}
+              >
+                {product.variants
+                  .slice(0)
+                  .reverse()
+                  .map((variant) => {
+                    return (
+                      <option
+                        key={variant.id}
+                        value={JSON.stringify({
+                          variantId: variant.id,
+                          size: variant.title
+                        })}
+                      >
+                        {variant.title}
+                      </option>
+                    );
                 })}
+              </select>
             </div>
           </div>
           <div className={styles.selection}>
@@ -127,18 +168,19 @@ const Product = ({ location }) => {
               </button>
             </div>
           </div>
-          <button className={styles.addbtn} onClick={() => handleAddToBag()}>
-            <span>Add to bag</span>
-            <BiShoppingBag />
-          </button>
-          <div className={styles.tabs}>
-            <div className="tab-titles">
-              <button className={styles.tabtitle}>Product Description</button>
-            </div>
-            <div className="tab-content">
-              <p>{product.description}</p>
-            </div>
-          </div>
+          <button className={styles.addbtn} onClick={() => handleAddToBag()}>Add to cart</button>
+
+          <Accordion allowZeroExpanded>
+            <AccordionItem className={accordionStyles.accordionItem}>
+              <AccordionItemHeading className={accordionStyles.accordionItemHeading}>
+                <AccordionItemButton className={accordionStyles.accordionItemButton}>Product details</AccordionItemButton>
+              </AccordionItemHeading>
+              <div className={accordionStyles.accordionItemIcon}></div>
+              <AccordionItemPanel>
+                <p>{product.description}</p>
+              </AccordionItemPanel>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
     </div>
