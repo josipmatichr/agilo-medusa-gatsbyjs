@@ -111,7 +111,7 @@ const Variants = ({
         sku: v.sku || undefined,
         ean: v.ean || undefined,
         prices: cleanPrices,
-        inventory_quantity: v.inventory_quantity,
+        inventory_quantity: parseInt(v.inventory_quantity),
         options: v.options.map(o => ({
           value: o.value,
           option_id: o.option_id,

@@ -170,7 +170,7 @@ const ProductIndex = () => {
 
     copy.variants = toCopy.product.variants.map(pv => ({
       title: pv.title,
-      inventory_quantity: pv.inventory_quantity,
+      inventory_quantity: parseInt(pv.inventory_quantity),
       prices: pv.prices.map(price => {
         let p = {
           amount: price.amount,

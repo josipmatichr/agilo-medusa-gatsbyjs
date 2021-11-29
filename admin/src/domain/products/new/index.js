@@ -333,7 +333,7 @@ const NewProduct = ({ }) => {
         title: v.title,
         sku: v.sku || null,
         ean: v.ean || null,
-        inventory_quantity: v.inventory_quantity,
+        inventory_quantity: parseInt(v.inventory_quantity),
         prices: v.prices.map(({ currency_code, amount }) => ({
           currency_code,
           amount: Math.round(amount),
