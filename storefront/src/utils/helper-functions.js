@@ -1,3 +1,5 @@
+import uniq from "lodash/uniq";
+
 export const quantity = (item) => {
   return item.quantity;
 };
@@ -16,11 +18,24 @@ export const getSlug = (path) => {
 };
 
 export const resetOptions = (product) => {
-  const variantId = product.variants.slice(0).reverse()[0].id;
-  const size = product.variants.slice(0).reverse()[0].title;
+  const variant = product.variants.slice(0).reverse()[0];
   return {
-    variantId: variantId,
+    options: product.options.map((productOption) => {
+      const type =
+        productOption.title.toLowerCase() === "color" ? "color" : "select";
+      const choices = uniq(productOption.values.map(({ value }) => value));
+      const value = variant.options.find(
+        (variantOption) => variantOption.option_id === productOption.id,
+      )?.value;
+
+      return {
+        id: productOption.id,
+        title: productOption.title,
+        type,
+        choices,
+        value,
+      };
+    }),
     quantity: 1,
-    size: size,
   };
 };
